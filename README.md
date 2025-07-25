@@ -1,8 +1,4 @@
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/rohitpagi33/medicamb/main/medicamb/public/vite.svg" width="120" alt="MediCamb Logo" />
-</p>
-
 <h1 align="center">MediCamb</h1>
 <p align="center"><b>Intelligent Medicine Recognition & Healthcare Assistant</b></p>
 
