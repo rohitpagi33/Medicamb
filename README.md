@@ -1,109 +1,144 @@
-# MediCamb – Intelligent Medicine Recognition & Healthcare Assistant
 
-🧠 MediCamb is an AI-powered healthcare assistant that allows users to upload photos of medicines to identify them and retrieve detailed medical information like ingredients, usage, and side effects. It also features an AI chatbot for general medical queries and health advice.
+<p align="center">
+  <img src="https://raw.githubusercontent.com/rohitpagi33/medicamb/main/medicamb/public/vite.svg" width="120" alt="MediCamb Logo" />
+</p>
 
-🚧 This project is a work in progress.
+<h1 align="center">MediCamb</h1>
+<p align="center"><b>Intelligent Medicine Recognition & Healthcare Assistant</b></p>
 
----
+<p align="center">
+  <em>AI-powered healthcare assistant for medicine identification, information, and medical advice.</em>
+</p>
 
-## Features
-
-- Medicine photo upload and image recognition
-- OCR and AI label scanning
-- Medicine details: ingredients, uses, side effects
-- AI chatbot for medical advice using Gemini
-- Responsive, mobile-first design
-- Real-time backend with MongoDB
-- Planned support for multilingual responses
-
----
-
-## Tech Stack
-
-Frontend: ReactJS + TailwindCSS  
-Backend: Node.js + Express  
-AI Chatbot: gemini 
-Image Recognition: TensorFlow.js
-Database: MongoDB  
-Hosting: Vercel
-Data Sources: WHO medicine datasets / OpenFDA
+<p align="center">
+  <a href="#features">Features</a> •
+  <a href="#tech-stack">Tech Stack</a> •
+  <a href="#how-it-works">How It Works</a> •
+  <a href="#setup">Setup</a> •
+  <a href="#project-structure">Project Structure</a> •
+  <a href="#timeline">Timeline</a> •
+  <a href="#license">License</a>
+</p>
 
 ---
 
-## Folder Structure
+## 🚀 Overview
 
-/medicamb  
-├── medicamb/           
-├── backend/              
-├── ai-models/            
-├── database/           
-└── README.md  
+MediCamb is an AI-powered healthcare assistant that enables users to upload medicine photos for instant identification and detailed information (ingredients, usage, side effects). It also features a conversational AI chatbot for general medical queries and health advice.
+
+> **Note:** This project is under active development.
 
 ---
 
-## How It Works
+## ✨ Features
 
-1. User uploads an image of a medicine.
-2. The app extracts text using OCR and identifies the medicine.
-3. The backend matches it with known data and returns:
-   - Name
-   - Ingredients
-   - Usage instructions
-   - Side effects
-4. Users can also chat with the built-in AI bot for health-related queries.
+- 📸 **Medicine Photo Upload & Recognition**
+- 🔎 **OCR & AI Label Scanning**
+- 💊 **Medicine Details:** Ingredients, Uses, Side Effects
+- 🤖 **AI Chatbot (Gemini) for Medical Advice**
+- 📱 **Responsive, Mobile-First Design**
+- ⚡ **Real-Time Backend (MongoDB)**
+- 🌐 **Planned: Multilingual Support**
 
 ---
 
-## Setup Guide
+## 🛠️ Tech Stack
 
-## Clone the project
+- **Frontend:** ReactJS, TailwindCSS
+- **Backend:** Node.js, Express
+- **AI Chatbot:** Gemini
+- **Image Recognition:** TensorFlow.js
+- **Database:** MongoDB
+- **Hosting:** Vercel
+- **Data Sources:** WHO Medicine Datasets, OpenFDA
+
+---
+
+## 🗂️ Project Structure
+
+```
+medicamb/
+├── medicamb/        # Frontend (React)
+├── backend/         # Backend (Node.js/Express)
+├── ai-models/       # (Planned) AI/ML Models
+├── database/        # (Planned) Database Scripts
+└── README.md
+```
+
+---
+
+## ⚙️ How It Works
+
+1. **Upload:** User uploads a photo of a medicine.
+2. **OCR & Recognition:** App extracts text and identifies the medicine.
+3. **Data Match:** Backend matches with known data and returns:
+    - Name
+    - Ingredients
+    - Usage Instructions
+    - Side Effects
+4. **Chatbot:** Users can chat with the built-in AI bot for health-related queries.
+
+---
+
+## 🏁 Setup
+
+### 1. Clone the Repository
+
+```sh
 git clone https://github.com/rohitpagi33/medicamb.git
 cd medicamb
+```
 
-## Install frontend
+### 2. Frontend Setup
 
+```sh
 cd medicamb
 npm install
 npm run dev
+```
 
-## Install backend
+### 3. Backend Setup
 
-cd ..
-cd backend
+```sh
+cd ../backend
 npm install
 npm run dev
+```
 
-## Note:
-### - Use your own Gemini Key in `.env`
-### - Set MongoDB URI in `.env` as well
+### 4. Environment Variables
 
----
-
-## Project Timeline
-
-Week 1-2: Collect datasets and plan UI  
-Week 3: Build OCR + AI model pipeline  
-Week 4: Develop backend APIs for medicine info  
-Week 5: Integrate OpenAI chatbot  
-Week 6: Connect frontend with backend  
-Week 7: Mobile optimization and testing  
-Week 8: Final deployment and documentation
+- Add your **Gemini API Key** to `.env`
+- Set your **MongoDB URI** in `.env`
 
 ---
 
-## Contact
+## 📅 Timeline
 
-Name: Rohit Pagi 
-Email: merohitpagi@gmail.com
+| Week | Milestone                                 |
+|------|-------------------------------------------|
+| 1-2  | Collect datasets, plan UI                 |
+| 3    | Build OCR + AI model pipeline             |
+| 4    | Develop backend APIs for medicine info    |
+| 5    | Integrate AI chatbot                      |
+| 6    | Connect frontend with backend             |
+| 7    | Mobile optimization, testing              |
+| 8    | Final deployment, documentation           |
 
 ---
 
-## License
+## 📬 Contact
+
+- **Name:** Rohit Pagi
+- **Email:** [merohitpagi@gmail.com](mailto:merohitpagi@gmail.com)
+
+---
+
+## 📝 License
 
 This project is licensed under the MIT License.
 
 ---
 
-## Disclaimer
+## ⚠️ Disclaimer
 
 MediCamb is an academic project and does not replace professional medical advice. Always consult a qualified healthcare provider before making medical decisions.
