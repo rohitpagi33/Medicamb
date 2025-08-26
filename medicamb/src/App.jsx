@@ -5,6 +5,7 @@ import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
 import AIChatPage from './pages/AIChatPage';
 import HomePage from './pages/HomePage';
+import UploadMedicine from './pages/UploadMedicine';
 
 function App() {
   const isAuthenticated = !!localStorage.getItem('token');
@@ -16,6 +17,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/chat" element={isAuthenticated ? <ChatPage /> : <Navigate to="/login" />} />
         <Route path="/ai-chat" element={isAuthenticated ? <AIChatPage /> : <Navigate to="/login" />} />
+        <Route path="/upload" element={isAuthenticated ? <UploadMedicine /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
   );
