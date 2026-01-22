@@ -102,8 +102,15 @@ const UploadMedicine = () => {
 
       if (res.data.error) throw new Error(res.data.error)
 
-      setMedicineName(res.data.medicineName)
-      setAiDetails(res.data.aiDetails)
+      // Check if medicine is restricted (not for fever/cold/flu)
+      if (res.data.restricted) {
+        setMedicineName("")
+        setAiDetails(res.data.aiDetails)
+        setError("") // Clear error, we'll show info in details section
+      } else {
+        setMedicineName(res.data.medicineName)
+        setAiDetails(res.data.aiDetails)
+      }
     } catch (err) {
       setError(err.response?.data?.error || err.message || "Failed to identify medicine. Please try again.")
     }
@@ -317,17 +324,23 @@ const UploadMedicine = () => {
                 </div>
               )}
 
-              {/* AI Details */}
+              {/* AI Details - Show for both identified and restricted medicines */}
               {aiDetails && (
                 <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-6">
                   <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
-                      <FileText className="w-5 h-5 text-blue-400" />
+                    <div className={`w-10 h-10 ${medicineName ? 'bg-blue-500/20' : 'bg-orange-500/20'} rounded-full flex items-center justify-center`}>
+                      {medicineName ? (
+                        <FileText className="w-5 h-5 text-blue-400" />
+                      ) : (
+                        <AlertTriangle className="w-5 h-5 text-orange-400" />
+                      )}
                     </div>
-                    <h3 className="text-xl font-bold text-white">Detailed Information</h3>
+                    <h3 className="text-xl font-bold text-white">
+                      {medicineName ? "Detailed Information" : "Notice"}
+                    </h3>
                   </div>
                   
-                  <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                  <div className={`rounded-xl p-6 border ${medicineName ? 'bg-white/5 border-white/10' : 'bg-orange-500/10 border-orange-500/30'}`}>
                     <div className="prose prose-invert max-w-none text-white">
                       <ReactMarkdown>
                         {aiDetails}
@@ -335,19 +348,21 @@ const UploadMedicine = () => {
                     </div>
                   </div>
 
-                  {/* Medical Disclaimer */}
-                  <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
-                    <div className="flex items-start space-x-3">
-                      <Info className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h4 className="font-semibold text-amber-300 mb-1">Medical Disclaimer</h4>
-                        <p className="text-amber-200/80 text-sm">
-                          This information is for educational purposes only and should not replace professional medical advice. 
-                          Always consult with a healthcare provider before making any medical decisions.
-                        </p>
+                  {/* Medical Disclaimer - Only show for identified medicines */}
+                  {medicineName && (
+                    <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl">
+                      <div className="flex items-start space-x-3">
+                        <Info className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-amber-300 mb-1">Medical Disclaimer</h4>
+                          <p className="text-amber-200/80 text-sm">
+                            This information is for educational purposes only and should not replace professional medical advice. 
+                            Always consult with a healthcare provider before making any medical decisions.
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>

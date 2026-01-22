@@ -172,15 +172,50 @@ const AIChatPage = () => {
         },
       ])
     } catch (err) {
+      console.error("Chat error:", err)
+      
+      // Handle different types of errors
+      let errorMessage = "I apologize, but I encountered an error. Please try again."
+      let errorDisplay = ""
+
+      if (err.response) {
+        // Server responded with error status
+        const status = err.response.status
+        if (status === 429) {
+          errorMessage = "I'm currently experiencing high demand. Please try again in a few moments."
+          errorDisplay = "Service temporarily unavailable. Please try again later."
+        } else if (status === 401) {
+          errorMessage = "Please log in again to continue using the chat."
+          errorDisplay = "Authentication required. Please log in."
+        } else if (status === 500) {
+          errorMessage = "I encountered a server error. Please try again in a moment."
+          errorDisplay = "Server error. Please try again."
+        } else {
+          errorMessage = err.response.data?.message || err.response.data?.error || errorMessage
+          errorDisplay = `Error ${status}: ${errorMessage}`
+        }
+      } else if (err.request) {
+        // Request was made but no response received
+        errorMessage = "I couldn't connect to the server. Please check your internet connection and try again."
+        errorDisplay = "Connection error. Please check your internet and try again."
+      } else {
+        // Something else happened
+        errorMessage = "An unexpected error occurred. Please try again."
+        errorDisplay = err.message || "Unexpected error occurred."
+      }
+
       setMessages((prev) => [
         ...prev,
         {
           role: "ai",
-          content: err.response?.data?.message || "I apologize, but I encountered an error. Please try again.",
+          content: errorMessage,
           timestamp: new Date(),
         },
       ])
-      setError("Connection error. Please check your internet and try again.")
+      
+      if (errorDisplay) {
+        setError(errorDisplay)
+      }
     }
 
     setLoading(false)
@@ -196,9 +231,9 @@ const AIChatPage = () => {
 
   const quickQuestions = [
     "What are the symptoms of flu?",
-    "How to manage headaches?",
-    "First aid for cuts and wounds",
-    "When should I see a doctor?",
+    "How to treat a common cold?",
+    "What medicine helps with fever?",
+    "How to prevent getting a cold?",
   ]
 
   const handleQuickQuestion = (question) => {
@@ -259,7 +294,7 @@ const AIChatPage = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-2">Welcome to MediCamb AI</h3>
                 <p className="text-white/70 mb-6 max-w-md mx-auto">
-                  I'm here to help with your medical questions. Try asking about symptoms, treatments, or general health advice.
+                  I'm here to help with questions about <strong>fever, cold, and flu</strong>. Currently, I can only assist with these conditions. Other diseases will be available soon.
                 </p>
                 
                 {/* Quick Questions */}
