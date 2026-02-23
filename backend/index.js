@@ -9,6 +9,8 @@ const chatRoutes = require('./routes/chatRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const identify = require('./routes/identify');
+const hospitalRoutes = require('./routes/hospitalRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
 
 
 const app = express();
@@ -25,6 +27,8 @@ app.use('/api/chats', chatRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/identify', identify);
+app.use('/api/hospitals', hospitalRoutes);
+app.use('/api/appointments', appointmentRoutes);
 
 app.get('/', (req, res) => {
   res.send('AI Chatbot Backend Running');

@@ -16,6 +16,7 @@ import {
   Heart,
   Search,
   MessageCircle,
+  Building2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -106,6 +107,14 @@ export default function HomePage() {
             >
               <Bot className="w-5 h-5" />
               <span>Chat with AI Doctor</span>
+            </button>
+
+            <button
+              className="px-8 py-4 rounded-full border-2 border-emerald-400/60 text-emerald-300 font-bold text-lg hover:bg-emerald-400/10 transition-all duration-300 flex items-center space-x-2"
+              onClick={() => navigate('/hospitals')}
+            >
+              <Building2 className="w-5 h-5" />
+              <span>Find Hospitals Near Me</span>
             </button>
           </motion.div>
 

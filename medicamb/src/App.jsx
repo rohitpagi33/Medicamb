@@ -6,6 +6,7 @@ import ChatPage from './pages/ChatPage';
 import AIChatPage from './pages/AIChatPage';
 import HomePage from './pages/HomePage';
 import UploadMedicine from './pages/UploadMedicine';
+import HospitalSearchPage from './pages/HospitalSearchPage';
 
 function App() {
   const isAuthenticated = !!localStorage.getItem('token');
@@ -18,6 +19,7 @@ function App() {
         <Route path="/chat" element={isAuthenticated ? <ChatPage /> : <Navigate to="/login" />} />
         <Route path="/ai-chat" element={isAuthenticated ? <AIChatPage /> : <Navigate to="/login" />} />
         <Route path="/upload" element={isAuthenticated ? <UploadMedicine /> : <Navigate to="/login" />} />
+        <Route path="/hospitals" element={isAuthenticated ? <HospitalSearchPage /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
   );
