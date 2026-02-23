@@ -2,6 +2,14 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const buildUserResponse = (user) => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  createdAt: user.createdAt,
+  updatedAt: user.updatedAt,
+});
+
 exports.registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -18,7 +26,7 @@ exports.registerUser = async (req, res) => {
     res
       .status(201)
       .json({
-        user: { id: user._id, name: user.name, email: user.email },
+        user: buildUserResponse(user),
         token,
       });
   } catch (err) {
@@ -42,9 +50,36 @@ exports.loginUser = async (req, res) => {
     res
       .status(200)
       .json({
-        user: { id: user._id, name: user.name, email: user.email },
+        user: buildUserResponse(user),
         token,
       });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// GET /api/auth/me - current user profile
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json({ user: buildUserResponse(user) });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// PUT /api/auth/me - update basic profile (name)
+exports.updateMe = async (req, res) => {
+  try {
+    const { name } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (name) user.name = name;
+    await user.save();
+
+    res.json({ user: buildUserResponse(user) });
   } catch (err) {
     res.status(500).json({ message: "Server error" });
   }

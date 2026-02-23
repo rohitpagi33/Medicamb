@@ -1,26 +1,41 @@
 const PDFDocument = require('pdfkit');
 const Appointment = require('../models/Appointment');
-const Hospital = require('../models/Hospital');
 
 // POST /api/appointments
+// Expects `hospital` object in body (no hospitalId, no hospital table needed)
 exports.createAppointment = async (req, res) => {
   try {
-    const { hospitalId, date, time, reason, patientName, patientEmail, patientPhone } = req.body;
+    const { hospital, date, time, reason, patientName, patientEmail, patientPhone } = req.body;
 
-    if (!hospitalId || !date || !time || !patientName) {
-      return res.status(400).json({ message: 'hospitalId, date, time and patientName are required' });
-    }
-
-    const hospital = await Hospital.findById(hospitalId);
-    if (!hospital) {
-      return res.status(404).json({ message: 'Hospital not found' });
+    if (!hospital || !hospital.name || !date || !time || !patientName) {
+      return res
+        .status(400)
+        .json({ message: 'hospital (with name), date, time and patientName are required' });
     }
 
     const dateTime = new Date(`${date}T${time}`);
 
     const appointment = await Appointment.create({
       user: req.user._id,
-      hospital: hospital._id,
+      hospital: {
+        name: hospital.name,
+        addressLine1:
+          hospital.addressLine1 ||
+          hospital.address?.line1 ||
+          hospital.address ||
+          '',
+        city: hospital.city || hospital.address?.city || '',
+        state: hospital.state || hospital.address?.state || '',
+        pincode: hospital.pincode || hospital.address?.pincode || '',
+        lat:
+          hospital.lat != null
+            ? hospital.lat
+            : hospital.location?.coordinates?.[1],
+        lng:
+          hospital.lng != null
+            ? hospital.lng
+            : hospital.location?.coordinates?.[0],
+      },
       patientName,
       patientEmail,
       patientPhone,
@@ -38,10 +53,7 @@ exports.createAppointment = async (req, res) => {
 // GET /api/appointments/me
 exports.getMyAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find({ user: req.user._id })
-      .populate('hospital')
-      .sort({ date: 1 });
-
+    const appointments = await Appointment.find({ user: req.user._id }).sort({ date: 1 });
     res.json({ appointments });
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch appointments', error: err.message });
@@ -51,7 +63,7 @@ exports.getMyAppointments = async (req, res) => {
 // GET /api/appointments/:id
 exports.getAppointmentById = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.id).populate('hospital').populate('user');
+    const appointment = await Appointment.findById(req.params.id).populate('user');
     if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
     if (appointment.user._id.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized to view this appointment' });
@@ -65,7 +77,7 @@ exports.getAppointmentById = async (req, res) => {
 // GET /api/appointments/:id/pdf
 exports.getAppointmentPdf = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.id).populate('hospital').populate('user');
+    const appointment = await Appointment.findById(req.params.id).populate('user');
     if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
     if (appointment.user._id.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized to view this appointment' });
@@ -106,10 +118,10 @@ exports.getAppointmentPdf = async (req, res) => {
     doc.fontSize(12);
     doc.text(`Name: ${hospital.name}`);
     doc.text(
-      `Address: ${hospital.address.line1}, ${hospital.address.city}, ${hospital.address.state} - ${hospital.address.pincode}`,
+      `Address: ${hospital.addressLine1 || ''}${hospital.city ? ', ' + hospital.city : ''}${
+        hospital.state ? ', ' + hospital.state : ''
+      }${hospital.pincode ? ' - ' + hospital.pincode : ''}`,
     );
-    if (hospital.phone) doc.text(`Phone: ${hospital.phone}`);
-    if (hospital.website) doc.text(`Website: ${hospital.website}`);
     doc.moveDown();
 
     // Appointment info

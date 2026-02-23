@@ -17,6 +17,7 @@ import {
   Search,
   MessageCircle,
   Building2,
+  User,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -90,7 +91,7 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center items-center"
           >
             <button
               className="group bg-gradient-to-r from-orange-500 to-orange-600 px-8 py-4 rounded-full text-black font-bold text-lg hover:shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 flex items-center space-x-2"
@@ -115,6 +116,14 @@ export default function HomePage() {
             >
               <Building2 className="w-5 h-5" />
               <span>Find Hospitals Near Me</span>
+            </button>
+
+            <button
+              className="px-8 py-4 rounded-full border-2 border-sky-400/60 text-sky-300 font-bold text-lg hover:bg-sky-400/10 transition-all duration-300 flex items-center space-x-2"
+              onClick={() => navigate('/profile')}
+            >
+              <User className="w-5 h-5" />
+              <span>My Profile</span>
             </button>
           </motion.div>
 

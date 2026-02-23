@@ -1,4 +1,5 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
+const AIMessage = require("../models/AIMessage");
 
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
@@ -13,6 +14,20 @@ exports.askAI = async (req, res) => {
     const result = await model.generateContent(prompt);
     const answer = await result.response.text();
     console.log("Gemini answer:", answer);
+
+    // Persist this Q&A for the logged-in user
+    if (req.user && req.user._id) {
+      try {
+        await AIMessage.create({
+          user: req.user._id,
+          question,
+          answer,
+        });
+      } catch (saveErr) {
+        console.error("Failed to save AI message:", saveErr);
+      }
+    }
+
     res.json({ answer });
   } catch (err) {
     const isQuotaError = err.message && err.message.includes("quota");
@@ -23,3 +38,15 @@ exports.askAI = async (req, res) => {
     }
   }
 }; 
+
+// GET /api/ai/history - return AI Q&A history for current user
+exports.getHistory = async (req, res) => {
+  try {
+    const history = await AIMessage.find({ user: req.user._id })
+      .sort({ createdAt: 1 })
+      .lean();
+    res.json({ history });
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch AI chat history', error: err.message });
+  }
+};

@@ -160,7 +160,15 @@ const HospitalSearchPage = () => {
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/appointments`,
         {
-          hospitalId: selectedHospital._id,
+          hospital: {
+            name: selectedHospital.name,
+            addressLine1: selectedHospital.address?.line1 || "",
+            city: selectedHospital.address?.city || "",
+            state: selectedHospital.address?.state || "",
+            pincode: selectedHospital.address?.pincode || "",
+            lat: selectedHospital.location?.coordinates?.[1],
+            lng: selectedHospital.location?.coordinates?.[0],
+          },
           date: appointmentDate,
           time: appointmentTime,
           reason,
