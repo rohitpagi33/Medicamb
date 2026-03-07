@@ -2,7 +2,6 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import ChatPage from './pages/ChatPage';
 import AIChatPage from './pages/AIChatPage';
 import HomePage from './pages/HomePage';
 import UploadMedicine from './pages/UploadMedicine';
@@ -32,7 +31,6 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
 
         {/* User protected */}
-        <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
         <Route path="/ai-chat" element={<ProtectedRoute><AIChatPage /></ProtectedRoute>} />
         <Route path="/upload" element={<ProtectedRoute><UploadMedicine /></ProtectedRoute>} />
         <Route path="/hospitals" element={<ProtectedRoute><HospitalSearchPage /></ProtectedRoute>} />

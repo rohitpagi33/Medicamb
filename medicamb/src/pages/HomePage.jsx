@@ -4,10 +4,9 @@
 import React from "react";
 import { motion } from "framer-motion";
 import {
-  Camera, Bot, Shield, Clock, Globe, CheckCircle, ArrowRight, Zap,
-  Heart, Search, MessageCircle, Building2, User, FileText, Activity,
-  ChevronRight, Star, Microscope, Upload, Brain, Calendar,
-  TrendingUp, Lock, Stethoscope,
+  Camera, Bot, Building2, Microscope, CheckCircle, ArrowRight,
+  Heart, User, FileText, Activity, ChevronRight, Upload,
+  TrendingUp, Lock, Clock, LogIn, UserPlus,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -63,38 +62,10 @@ const FEATURES = [
     badge: "Gemini AI",
     badgeColor: "text-violet-400 bg-violet-500/10 border-violet-500/30",
     description:
-      "Upload your medical reports — blood tests, urine analysis, MRI, lipid profiles, thyroid tests and more. Our AI compares your values against medical normal ranges and provides a clear, understandable summary with health suggestions.",
+      "Upload your medical reports — blood tests, urine analysis, MRI, lipid profiles, thyroid tests and more. Our AI compares your values against medical normal ranges and provides a clear summary with suggestions.",
     highlights: ["20+ report types", "Normal range comparison", "Medical summary", "Health suggestions"],
     route: "/report-analysis",
     cta: "Analyze Report",
-  },
-  {
-    icon: MessageCircle,
-    title: "Patient Chat",
-    color: "from-pink-500 to-rose-500",
-    bg: "bg-pink-500/10",
-    border: "border-pink-500/30",
-    badge: "Real-time",
-    badgeColor: "text-pink-400 bg-pink-500/10 border-pink-500/30",
-    description:
-      "Connect and communicate with other patients or healthcare support in real-time. Share experiences, ask questions, and get peer support from a caring community.",
-    highlights: ["Real-time messaging", "Peer support", "Private conversations", "Message history"],
-    route: "/chat",
-    cta: "Open Chat",
-  },
-  {
-    icon: User,
-    title: "Profile Management",
-    color: "from-teal-500 to-green-500",
-    bg: "bg-teal-500/10",
-    border: "border-teal-500/30",
-    badge: "Personalized",
-    badgeColor: "text-teal-400 bg-teal-500/10 border-teal-500/30",
-    description:
-      "Manage your personal health profile in one place. View all your appointment history, track your AI chat conversations, update your details, and keep your healthcare journey organized.",
-    highlights: ["Appointment history", "AI chat history", "Profile update", "Data privacy"],
-    route: "/profile",
-    cta: "View Profile",
   },
 ];
 
@@ -139,6 +110,36 @@ export default function HomePage() {
               transition={{ duration: 12 + i * 2, repeat: Infinity, ease: "easeInOut", delay: i * 0.7 }}
             />
           ))}
+        </div>
+
+        {/* Top-right nav icons */}
+        <div className="absolute top-5 right-5 z-20 flex items-center space-x-2">
+          {isAuthenticated ? (
+            <button
+              onClick={() => navigate("/profile")}
+              title="My Profile"
+              className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+            >
+              <User className="w-5 h-5 text-white" />
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate("/login")}
+                className="flex items-center space-x-1.5 px-3 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white text-sm font-medium transition-all"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Login</span>
+              </button>
+              <button
+                onClick={() => navigate("/register")}
+                className="flex items-center space-x-1.5 px-3 py-2 rounded-full bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold transition-all"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>Sign Up</span>
+              </button>
+            </>
+          )}
         </div>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 text-center">
@@ -216,9 +217,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Features Section — 4 cards in 2x2 grid */}
       <section className="py-24 px-4 bg-gradient-to-b from-black to-gray-950">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -234,11 +235,11 @@ export default function HomePage() {
               <span className="bg-gradient-to-r from-orange-400 to-sky-400 bg-clip-text text-transparent">Features</span>
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-              MediCamb brings six powerful AI-driven healthcare tools together in a single, seamless experience.
+              Four powerful AI-driven tools to take control of your healthcare journey.
             </p>
           </motion.div>
 
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2">
             {FEATURES.map((feature, i) => (
               <motion.div
                 key={feature.title}
@@ -247,7 +248,7 @@ export default function HomePage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                className={`relative rounded-3xl border ${feature.border} ${feature.bg} p-6 flex flex-col hover:scale-[1.02] transition-transform duration-300 group cursor-pointer`}
+                className={`relative rounded-3xl border ${feature.border} ${feature.bg} p-7 flex flex-col hover:scale-[1.02] transition-transform duration-300 group cursor-pointer`}
                 onClick={() => navigate(isAuthenticated ? feature.route : "/login")}
               >
                 {/* Badge */}
@@ -257,17 +258,17 @@ export default function HomePage() {
 
                 {/* Icon & Title */}
                 <div className="flex items-center space-x-3 mb-3">
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg`}>
-                    <feature.icon className="w-6 h-6 text-white" />
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg`}>
+                    <feature.icon className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">{feature.title}</h3>
+                  <h3 className="text-2xl font-bold text-white">{feature.title}</h3>
                 </div>
 
                 {/* Description */}
-                <p className="text-gray-300 text-sm leading-relaxed mb-4">{feature.description}</p>
+                <p className="text-gray-300 text-sm leading-relaxed mb-5">{feature.description}</p>
 
                 {/* Highlights */}
-                <ul className="space-y-1.5 mb-5 flex-1">
+                <ul className="grid grid-cols-2 gap-y-1.5 gap-x-3 mb-6 flex-1">
                   {feature.highlights.map((h) => (
                     <li key={h} className="flex items-center space-x-2 text-xs text-gray-400">
                       <CheckCircle className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
@@ -278,7 +279,7 @@ export default function HomePage() {
 
                 {/* CTA */}
                 <button
-                  className={`w-full py-2.5 rounded-2xl bg-gradient-to-r ${feature.color} text-white text-sm font-semibold flex items-center justify-center space-x-2 group-hover:shadow-lg transition-shadow`}
+                  className={`w-full py-3 rounded-2xl bg-gradient-to-r ${feature.color} text-white text-sm font-semibold flex items-center justify-center space-x-2 group-hover:shadow-lg transition-shadow`}
                 >
                   <span>{feature.cta}</span>
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -359,7 +360,7 @@ export default function HomePage() {
                   onClick={() => navigate("/profile")}
                   className="px-10 py-4 rounded-full bg-gradient-to-r from-orange-500 to-pink-500 text-white font-bold text-lg hover:shadow-2xl transition-all"
                 >
-                  Go to Dashboard
+                  Go to My Profile
                 </button>
               )}
             </div>
@@ -369,5 +370,4 @@ export default function HomePage() {
     </div>
   );
 }
-
 
