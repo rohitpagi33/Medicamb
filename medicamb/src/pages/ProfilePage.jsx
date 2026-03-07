@@ -142,7 +142,7 @@ const ProfilePage = () => {
           {/* Profile Hero Card */}
           <div className="bg-gray-900 border border-white/10 rounded-3xl overflow-hidden">
             <div className="bg-gradient-to-r from-orange-500/20 via-transparent to-sky-500/10 h-24 relative">
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\"40\" height=\"40\" viewBox=\"0 0 40 40\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.03\"%3E%3Crect x=\"0\" y=\"0\" width=\"20\" height=\"20\"/%3E%3Crect x=\"20\" y=\"20\" width=\"20\" height=\"20\"/%3E%3C/g%3E%3C/svg%3E')]" />
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "linear-gradient(45deg, rgba(255,255,255,0.03) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.03) 50%, rgba(255,255,255,0.03) 75%, transparent 75%, transparent)", backgroundSize: "40px 40px" }} />
             </div>
             <div className="px-6 pb-6">
               <div className="flex items-end justify-between -mt-10 mb-4">
