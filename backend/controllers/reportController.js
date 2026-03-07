@@ -10,20 +10,17 @@ const REPORT_NORMAL_RANGES = {
   'Lipid Profile': 'Total Cholesterol: <200 mg/dL, LDL: <100 mg/dL, HDL: >60 mg/dL (optimal), Triglycerides: <150 mg/dL, VLDL: 2–30 mg/dL',
   'Thyroid (TFT)': 'TSH: 0.4–4.0 mIU/L, T3: 80–200 ng/dL, T4 (Free): 0.8–1.8 ng/dL',
   'Blood Sugar / HbA1c': 'Fasting Glucose: 70–100 mg/dL, Post-prandial: <140 mg/dL, HbA1c: <5.7% (Normal), 5.7–6.4% (Pre-diabetic), ≥6.5% (Diabetic)',
+  'Blood Pressure Report': 'Systolic: <120 mmHg (Normal), 120-129 (Elevated), 130-139 (High Stage 1), ≥140 (High Stage 2); Diastolic: <80 mmHg (Normal), 80-89 (High Stage 1), ≥90 (High Stage 2)',
+  'Diabetes Screening': 'Fasting Glucose: 70–100 mg/dL, Post-prandial (2hr): <140 mg/dL, HbA1c: <5.7% (Normal), 5.7–6.4% (Pre-diabetic), ≥6.5% (Diabetic), Fasting Insulin: 2.6–24.9 µIU/mL',
   'Urine Routine (Urinalysis)': 'pH: 4.5–8.0, Specific Gravity: 1.005–1.030, Protein: Negative, Glucose: Negative, WBC: 0–5/HPF, RBC: 0–2/HPF, Nitrites: Negative',
   'Urine Culture': 'No growth (sterile) — <1000 CFU/mL is usually not significant; ≥100,000 CFU/mL indicates infection',
   'Stool Routine': 'Color: Brown, Consistency: Formed, Occult Blood: Negative, Parasites: None, Mucus: None, RBC/WBC: Nil',
   'ECG / EEG Report': 'Normal sinus rhythm: 60–100 bpm, PR interval: 0.12–0.20 s, QRS: <0.12 s, QTc: <0.44 s (M), <0.46 s (F)',
-  'MRI / CT Scan (Brain)': 'No acute infarct, hemorrhage, or mass lesion. Normal ventricular size. No midline shift.',
-  'MRI Spine': 'No disc herniation or nerve compression. Normal vertebral alignment. No signal changes.',
   'Chest X-Ray': 'Clear lung fields, normal cardiac silhouette (<50% CTR), no pleural effusion, no infiltrates.',
-  'Bone Density (DEXA)': 'T-score: ≥-1.0 (Normal), -1.0 to -2.5 (Osteopenia), ≤-2.5 (Osteoporosis)',
   'Iron Studies': 'Serum Iron: 60–170 µg/dL, TIBC: 240–450 µg/dL, Ferritin: 12–300 ng/mL (M), 12–150 (F), Transferrin Saturation: 20–50%',
   'Vitamin D & B12': 'Vitamin D (25-OH): 30–100 ng/mL (Sufficient), 20–29 (Insufficient), <20 (Deficient); Vitamin B12: 200–900 pg/mL',
   'Coagulation Profile (PT/INR)': 'PT: 11–13.5 seconds, INR: 0.8–1.1 (therapeutic for anticoagulation: 2.0–3.0), aPTT: 25–35 seconds',
-  'Semen Analysis': 'Volume: 1.5–5.0 mL, pH: 7.2–8.0, Sperm Count: >15 million/mL, Motility: >40% total (>32% progressive), Morphology: >4% normal',
   'Hormone Panel (Testosterone/Estrogen/FSH/LH)': 'Testosterone (M): 300–1000 ng/dL; Estradiol (F): varies by cycle; FSH (F, follicular): 3.5–12.5 mIU/mL; LH (F, follicular): 2.4–12.6 mIU/mL',
-  'COVID / Dengue / Malaria Test': 'Negative result indicates no active infection. Positive result should be correlated with clinical findings.',
 };
 
 // POST /api/reports/analyze
@@ -52,15 +49,39 @@ exports.analyzeReport = async (req, res) => {
 Normal reference ranges for ${reportType}:
 ${normalRanges}
 
-Please analyze this medical report image/document and provide:
+Analyze this medical report and respond ONLY with valid JSON (no markdown, no code fences, no extra text). Use this exact structure:
 
-1. **IDENTIFIED VALUES**: List all test parameters found with their values and units.
-2. **NORMAL vs ABNORMAL**: For each value, clearly state if it is NORMAL, HIGH, or LOW compared to reference ranges.
-3. **MEDICAL SUMMARY**: A clear, easy-to-understand summary of what these results mean.
-4. **SUGGESTIONS**: Specific health recommendations based on any abnormal findings. Include dietary advice, lifestyle changes, or follow-up tests if needed.
-5. **URGENCY**: State if any values require immediate medical attention.
+{
+  "parameters": [
+    {
+      "name": "Parameter Name",
+      "value": 12.5,
+      "unit": "g/dL",
+      "normalMin": 12.0,
+      "normalMax": 17.5,
+      "status": "normal"
+    }
+  ],
+  "summary": "Brief 2-3 sentence overall health summary based on results.",
+  "urgency": "none",
+  "urgencyNote": "",
+  "suggestions": [
+    "Suggestion 1",
+    "Suggestion 2"
+  ],
+  "overallStatus": "normal"
+}
 
-Be precise, medically accurate, and explain in terms a patient can understand. Do not diagnose but provide informational analysis.`;
+Rules:
+- "parameters": array of every test parameter found. "value" must be a number. "status" must be exactly one of: "normal", "high", "low", "critical". Use "critical" only if the value is dangerously out of range.
+- "normalMin" and "normalMax": the numeric reference range boundaries. If only an upper limit exists (e.g. <200), set normalMin to 0. If only a lower limit (e.g. >60), set normalMax to the value * 3 as a reasonable upper bound.
+- "summary": a patient-friendly plain-text summary.
+- "urgency": one of "none", "low", "moderate", "high". "high" means seek immediate medical attention.
+- "urgencyNote": explanation if urgency is not "none", otherwise empty string.
+- "suggestions": array of actionable health suggestions (diet, lifestyle, follow-up tests).
+- "overallStatus": one of "normal", "borderline", "abnormal", "critical" — the overall report verdict.
+
+Respond with ONLY the JSON object. No extra text before or after.`;
 
     const result = await model.generateContent([
       prompt,
@@ -72,12 +93,27 @@ Be precise, medically accurate, and explain in terms a patient can understand. D
       },
     ]);
 
-    const analysis = await result.response.text();
+    const rawText = await result.response.text();
+
+    // Try to parse as JSON, strip markdown fences if present
+    let parsed;
+    try {
+      const cleaned = rawText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+      parsed = JSON.parse(cleaned);
+    } catch {
+      // Fallback: return raw text if parsing fails
+      return res.json({
+        reportType,
+        normalRanges,
+        analysis: rawText,
+        structured: null,
+      });
+    }
 
     res.json({
       reportType,
       normalRanges,
-      analysis,
+      structured: parsed,
     });
   } catch (err) {
     console.error('Report analysis error:', err);
