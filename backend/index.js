@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
@@ -11,11 +13,15 @@ const aiRoutes = require('./routes/aiRoutes');
 const identify = require('./routes/identify');
 const hospitalRoutes = require('./routes/hospitalRoutes');
 const appointmentRoutes = require('./routes/appointmentRoutes');
-
+const adminRoutes = require('./routes/adminRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -29,6 +35,8 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/identify', identify);
 app.use('/api/hospitals', hospitalRoutes);
 app.use('/api/appointments', appointmentRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.get('/', (req, res) => {
   res.send('AI Chatbot Backend Running');

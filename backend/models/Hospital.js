@@ -1,5 +1,11 @@
 const mongoose = require('mongoose');
 
+const timeSlotSchema = new mongoose.Schema({
+  time: { type: String, required: true }, // e.g. "09:00 AM"
+  totalSlots: { type: Number, default: 10 },
+  bookedSlots: { type: Number, default: 0 },
+}, { _id: false });
+
 const hospitalSchema = new mongoose.Schema(
   {
     // If coming from Google Places
@@ -28,12 +34,19 @@ const hospitalSchema = new mongoose.Schema(
       },
     },
     specialities: [{ type: String }], // e.g. ['general', 'surgery', 'cancer']
+    categories: [{ type: String }], // e.g. ['Multi-Specialty', 'Pediatric', 'Ortho']
     phone: { type: String },
     email: { type: String },
     website: { type: String },
     isEmergency24x7: { type: Boolean, default: false },
     rating: { type: Number, min: 0, max: 5 },
     placeUrl: { type: String },
+
+    // Admin-managed fields
+    timings: { type: String, default: 'Mon-Sat: 8:00 AM - 8:00 PM' }, // general opening hours
+    appointmentDirection: { type: String }, // instructions for booking e.g. "Walk-in or call ahead"
+    timeSlots: [timeSlotSchema], // available appointment time slots
+    isInDatabase: { type: Boolean, default: true }, // marks this hospital as bookable
   },
   { timestamps: true },
 );

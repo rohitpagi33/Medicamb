@@ -101,6 +101,11 @@ const LoginPage = () => {
             Register
           </Link>
         </div>
+        <div className="mt-3 text-center">
+          <Link to="/admin/login" className="text-xs text-white/30 hover:text-white/50 transition-colors">
+            Admin Portal →
+          </Link>
+        </div>
       </div>
     </div>
   );
